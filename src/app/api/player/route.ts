@@ -1,10 +1,8 @@
 // Import necessary modules and functions from Next.js and Prisma client
-import { NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
 // Import necessary modules and functions from Next.js, Prisma client, and Zod for validation
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "@/lib/prisma";
 import { z } from "zod";
 
 // Define an asynchronous function to handle GET requests
