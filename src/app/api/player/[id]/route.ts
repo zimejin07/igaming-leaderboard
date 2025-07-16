@@ -1,5 +1,3 @@
-// app/api/player/[id]/route.ts
-
 // Import necessary modules and functions for handling requests and database operations
 import { NextRequest, NextResponse } from 'next/server'
 import prisma from '@/lib/prisma'
@@ -16,9 +14,7 @@ export async function PUT(
   { params }: { params: { id: string } } // Destructure the player ID from request parameters
 ) {
   try {
-    // Parse the incoming request body as JSON
     const body = await req.json()
-    // Validate the parsed data against the defined Zod update schema
     const data = updateSchema.parse(body)
 
     // Update the player's score in the database with the validated data

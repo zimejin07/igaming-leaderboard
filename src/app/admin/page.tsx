@@ -1,31 +1,131 @@
-// Import the `create` function from the Zustand library to create a state management store
-import { create } from "zustand";
+"use client";
 
-// Define a TypeScript type for a Player object with properties: id, name, score, and updatedAt
-type Player = {
-  id: string; // Unique identifier for the player
-  name: string; // Name of the player
-  score: number; // Score of the player
-  updatedAt: string; // Last update timestamp for the player's information
-};
+import { useEffect, useState } from "react";
+import { usePlayerStore } from "@/lib/store";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import axios from "axios";
 
-// Define an interface for the Store which includes the players array and a fetchPlayers function
-interface Store {
-  players: Player[]; // Array of Player objects
-  fetchPlayers: () => Promise<void>; // Function to fetch players asynchronously
+const schema = z.object({
+  name: z.string().min(1, "Name is required"),
+  score: z.number().int().nonnegative(),
+});
+
+type FormData = z.infer<typeof schema>;
+
+export default function AdminDashboard() {
+  const { players, fetchPlayers } = usePlayerStore();
+  const [editId, setEditId] = useState<string | null>(null);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors },
+  } = useForm<FormData>({ resolver: zodResolver(schema) });
+
+  useEffect(() => {
+    fetchPlayers();
+  }, [fetchPlayers]);
+
+  const onSubmit = async (data: FormData) => {
+    if (editId) {
+      await axios.put(`/api/player/${editId}`, { score: data.score });
+    } else {
+      await axios.post("/api/player", data);
+    }
+    reset();
+    setEditId(null);
+    fetchPlayers();
+  };
+
+  const handleEdit = (id: string, name: string, score: number) => {
+    setEditId(id);
+    setValue("name", name);
+    setValue("score", score);
+  };
+
+  const handleDelete = async (id: string) => {
+    await axios.delete(`/api/player/${id}`);
+    fetchPlayers();
+  };
+
+  return (
+    <main className="p-8 max-w-2xl mx-auto">
+      <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
+
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 mb-8">
+        <div>
+          <label className="block">Name</label>
+          <input
+            type="text"
+            {...register("name")}
+            disabled={!!editId}
+            className="border px-2 py-1 w-full"
+          />
+          {errors.name && (
+            <p className="text-red-500 text-sm">{errors.name.message}</p>
+          )}
+        </div>
+        <div>
+          <label className="block">Score</label>
+          <input
+            type="number"
+            {...register("score")}
+            className="border px-2 py-1 w-full"
+          />
+          {errors.score && (
+            <p className="text-red-500 text-sm">{errors.score.message}</p>
+          )}
+        </div>
+        <button
+          type="submit"
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          {editId ? "Update Score" : "Add Player"}
+        </button>
+        {editId && (
+          <button
+            type="button"
+            onClick={() => {
+              reset();
+              setEditId(null);
+            }}
+            className="ml-4 text-sm text-gray-600"
+          >
+            Cancel
+          </button>
+        )}
+      </form>
+
+      <ul>
+        {players.map((p) => (
+          <li
+            key={p.id}
+            className="border-b py-2 flex justify-between items-center"
+          >
+            <div>
+              <p className="font-semibold">{p.name}</p>
+              <p className="text-sm text-gray-500">Score: {p.score}</p>
+            </div>
+            <div className="space-x-2">
+              <button
+                onClick={() => handleEdit(p.id, p.name, p.score)}
+                className="text-blue-500"
+              >
+                Edit
+              </button>
+              <button
+                onClick={() => handleDelete(p.id)}
+                className="text-red-500"
+              >
+                Delete
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </main>
+  );
 }
-
-// Export a Zustand hook (`usePlayerStore`) that creates a store with an initial state
-export const usePlayerStore = create<Store>((set) => ({
-  players: [], // Initialize the players array as empty
-
-  // Define an asynchronous function to fetch player data from an API endpoint
-  fetchPlayers: async () => {
-    // Perform a GET request to the specified API endpoint to retrieve player data
-    const res = await fetch("/api/player");
-    // Parse the response as JSON
-    const data = await res.json();
-    // Update the store's state with the fetched player data
-    set({ players: data });
-  },
-}));
