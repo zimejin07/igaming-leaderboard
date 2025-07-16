@@ -9,7 +9,8 @@ datasource db {
 
 model Player {
   id        String   @id @default(cuid())
-  name      String
+  name      String   @db.VarChar(100)
   score     Int
   updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
 }

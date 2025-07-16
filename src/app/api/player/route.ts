@@ -1,4 +1,5 @@
 // Import necessary modules and functions from Next.js and Prisma client
+import { handleApi } from "@/lib/apiWrapper";
 import prisma from "@/lib/prisma";
 
 // Import necessary modules and functions from Next.js, Prisma client, and Zod for validation
@@ -17,32 +18,30 @@ export async function GET() {
 }
 
 // Define a schema using Zod for input validation
-const schema = z.object({
+const postSchema = z.object({
   name: z.string().min(1), // Name must be a non-empty string
   score: z.number().int().nonnegative(), // Score must be a non-negative integer
 });
 
-// Define an asynchronous function to handle POST requests
+// Define an asynchronous POST function to handle HTTP POST requests
 export async function POST(req: NextRequest) {
-  try {
-    // Parse the request body as JSON
+  // Use handleApi utility function, passing an asynchronous callback
+  return handleApi(async () => {
+    // Parse the JSON object from the incoming request body
     const body = await req.json();
-    // Validate the parsed data against the defined schema
-    const data = schema.parse(body);
 
-    // Create a new player record in the database with the validated data
-    const player = await prisma.player.create({
+    // Validate and parse the request data using a predefined schema (postSchema)
+    const data = postSchema.parse(body);
+
+    // Create a new player entry in the database using Prisma client
+    const newPlayer = await prisma.player.create({
       data: {
-        name: data.name,
-        score: data.score,
+        name: data.name, // Assign player's name from parsed data
+        score: data.score, // Assign player's score from parsed data
       },
     });
 
-    // Return the created player as a JSON response with status code 201 (Created)
-    return NextResponse.json(player, { status: 201 });
-  } catch (error) {
-    // Handle any errors during parsing or validation
-    // Return an error message as JSON response with status code 400 (Bad Request)
-    return NextResponse.json({ error: "Invalid input" }, { status: 400 });
-  }
+    // Return the newly created player object
+    return newPlayer;
+  });
 }

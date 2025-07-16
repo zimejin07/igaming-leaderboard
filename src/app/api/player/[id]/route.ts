@@ -1,52 +1,48 @@
-// Import necessary modules and functions for handling requests and database operations
-import { NextRequest, NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
-import { z } from 'zod'
+// Import necessary modules and types
+import { NextRequest } from "next/server"; // Import Next.js request type
+import { prisma } from "@/lib/prisma"; // Import Prisma client instance
+import { z } from "zod"; // Import Zod for schema validation
+import { handleApi } from "@/lib/apiWrapper"; // Import API wrapper utility
 
-// Define a Zod schema for validating the update request payload
+// Define a schema for validating the update operation using Zod
 const updateSchema = z.object({
-  score: z.number().int(), // Score must be an integer
-})
+  score: z.number().int(), // Ensure the score is an integer number
+});
 
-// Define an asynchronous function to handle PUT requests for updating a player's score
+// Define an asynchronous PUT function to handle HTTP PUT requests
 export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } } // Destructure the player ID from request parameters
+  req: NextRequest, // Incoming request object
+  { params }: { params: { id: string } } // Destructure parameters to extract player ID
 ) {
-  try {
-    const body = await req.json()
-    const data = updateSchema.parse(body)
+  // Use handleApi utility function, passing an asynchronous callback
+  return handleApi(async () => {
+    // Parse the JSON object from the incoming request body
+    const body = await req.json();
 
-    // Update the player's score in the database with the validated data
+    // Validate and parse the request data against the defined schema
+    const data = updateSchema.parse(body);
+
+    // Update the player's score in the database using Prisma client
     const updated = await prisma.player.update({
-      where: { id: params.id },    // Find player by ID
-      data: { score: data.score }, // Update the score
-    })
+      where: { id: params.id }, // Target player by ID
+      data: { score: data.score }, // Update score with validated data
+    });
 
-    // Return the updated player as a JSON response
-    return NextResponse.json(updated)
-  } catch (error) {
-    // If an error occurs during validation or database update, catch it
-    // Return an error message as a JSON response with a status code of 400 (Bad Request)
-    return NextResponse.json({ error: 'Invalid update' }, { status: 400 })
-  }
+    // Return the updated player object
+    return updated;
+  });
 }
 
-// Define an asynchronous function to handle DELETE requests for removing a player
+// Define an asynchronous DELETE function to handle HTTP DELETE requests
 export async function DELETE(
-  _: NextRequest, // Placeholder for the request; not used further
-  { params }: { params: { id: string } } // Destructure the player ID from request parameters
+  _: NextRequest, // Incoming request object (underscore used to ignore parameter)
+  { params }: { params: { id: string } } // Destructure parameters to extract player ID
 ) {
-  try {
-    // Delete the player from the database using the provided player ID
-    await prisma.player.delete({
-      where: { id: params.id },
+  // Use handleApi utility function for error handling or response formatting
+  return handleApi(() =>
+    // Delete the player record from the database using Prisma client
+    prisma.player.delete({
+      where: { id: params.id }, // Target player by ID
     })
-    // Return a success message as a JSON response
-    return NextResponse.json({ message: 'Deleted successfully' })
-  } catch (error) {
-    // If an error occurs during deletion, catch it
-    // Return an error message as a JSON response with a status code of 500 (Internal Server Error)
-    return NextResponse.json({ error: 'Deletion failed' }, { status: 500 })
-  }
+  );
 }

@@ -20,6 +20,17 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data # Maps the volume 'pgdata' to the PostgreSQL data directory
 
+  web:
+    build: .
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/leaderboarddb
+      - NODE_ENV=production
+      - SEED_SECRET=demo123
+    depends_on:
+      - db
+
 # Declare a named volume to persist PostgreSQL data across container restarts
 volumes:
   pgdata:
