@@ -9,7 +9,7 @@ import axios from "axios";
 
 const schema = z.object({
   name: z.string().min(1, "Name is required"),
-  score: z.number().int().nonnegative(),
+  score: z.number(),
 });
 
 type FormData = z.infer<typeof schema>;
@@ -72,7 +72,7 @@ export default function AdminDashboard() {
           <label className="block">Score</label>
           <input
             type="number"
-            {...register("score")}
+            {...register("score", { valueAsNumber: true })}
             className="border px-2 py-1 w-full"
           />
           {errors.score && (
