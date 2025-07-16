@@ -12,7 +12,7 @@ const updateSchema = z.object({
 // Define an asynchronous PUT function to handle HTTP PUT requests
 export async function PUT(
   req: NextRequest, // Incoming request object
-  { params }: { params: { id: string } } // Destructure parameters to extract player ID
+  context: { params: { id: string } } // Destructure parameters to extract player ID
 ) {
   // Use handleApi utility function, passing an asynchronous callback
   return handleApi(async () => {
@@ -24,7 +24,7 @@ export async function PUT(
 
     // Update the player's score in the database using Prisma client
     const updated = await prisma.player.update({
-      where: { id: params.id }, // Target player by ID
+      where: { id: context.params.id }, // Target player by ID
       data: { score: data.score }, // Update score with validated data
     });
 
@@ -36,13 +36,13 @@ export async function PUT(
 // Define an asynchronous DELETE function to handle HTTP DELETE requests
 export async function DELETE(
   _: NextRequest, // Incoming request object (underscore used to ignore parameter)
-  { params }: { params: { id: string } } // Destructure parameters to extract player ID
+  context: { params: { id: string } } // Destructure parameters to extract player ID
 ) {
   // Use handleApi utility function for error handling or response formatting
   return handleApi(() =>
     // Delete the player record from the database using Prisma client
     prisma.player.delete({
-      where: { id: params.id }, // Target player by ID
+      where: { id: context.params.id }, // Target player by ID
     })
   );
 }
