@@ -1,19 +1,28 @@
-// Global Error Handling Wrapper
-export async function handleApi<T>(
-  fn: () => Promise<T>
-): Promise<{ data?: T; error?: string }> {
+/**
+ * A utility function to handle API calls with standardized response formatting.
+ *
+ * @template T - The type of the result returned by the promise.
+ * @param fn - An asynchronous callback function that returns a promise.
+ * @returns A promise that resolves to a standard HTTP response object.
+ */
+export async function handleApi<T>(fn: () => Promise<T>): Promise<Response> {
   try {
-    const data = await fn();
-    return { data };
-  } catch (error: unknown) {
-    // Log detailed error information if it's an instance of Error
-    if (error instanceof Error) {
-      console.error("[API ERROR]:", error.message);
-      return { error: error.message }; // Return a more informative error message
-    }
+    // Execute the passed asynchronous function and await its result
+    const result = await fn();
 
-    // For unknown errors, log them as is
-    console.error("[API ERROR]: An unknown error occurred", error);
-    return { error: "An unknown error occurred, please try again." };
+    // Return the result wrapped in a JSON response
+    return new Response(JSON.stringify(result), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
+    });
+  } catch (error) {
+    // Log the caught error to the server console
+    console.error("[API ERROR]", error);
+
+    // Respond with a generic internal server error message and 500 status code
+    return new Response(JSON.stringify({ error: "Internal Server Error" }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }

@@ -1,48 +1,69 @@
-// Import necessary modules and types
-import { NextRequest } from "next/server"; // Import Next.js request type
-import { prisma } from "@/lib/prisma"; // Import Prisma client instance
+import { NextRequest } from "next/server";
+import { prisma } from "@/lib/prisma"; // Import the Prisma client to interact with the database
 import { z } from "zod"; // Import Zod for schema validation
-import { handleApi } from "@/lib/apiWrapper"; // Import API wrapper utility
+import { handleApi } from "@/lib/apiWrapper"; // Import a utility to handle API requests
 
-// Define a schema for validating the update operation using Zod
+// Define a schema using Zod to validate that 'score' is an integer in the request body
 const updateSchema = z.object({
-  score: z.number().int(), // Ensure the score is an integer number
+  score: z.number().int(),
 });
 
-// Define an asynchronous PUT function to handle HTTP PUT requests
+// Define a type alias for function parameter context, representing an ID wrapped in a Promise
+type Params = Promise<{ id: string }>;
+
+/**
+ * Handles HTTP PUT requests to update a player's score.
+ *
+ * @param req - The incoming request object.
+ * @param context - Contains parameters, specifically the player ID.
+ * @returns A promise that resolves to a Response object.
+ */
 export async function PUT(
-  req: NextRequest, // Incoming request object
-  context: { params: { id: string } } // Destructure parameters to extract player ID
-) {
-  // Use handleApi utility function, passing an asynchronous callback
+  req: NextRequest,
+  context: { params: Params }
+): Promise<Response> {
   return handleApi(async () => {
-    // Parse the JSON object from the incoming request body
+    // Destructure and await the ID from the context parameters
+    const { id } = await context.params;
+
+    // Parse the JSON body of the request
     const body = await req.json();
 
-    // Validate and parse the request data against the defined schema
+    // Validate the parsed data against the updateSchema
     const data = updateSchema.parse(body);
 
-    // Update the player's score in the database using Prisma client
+    // Perform the update operation in the database using Prisma
     const updated = await prisma.player.update({
-      where: { id: context.params.id }, // Target player by ID
-      data: { score: data.score }, // Update score with validated data
+      where: { id },
+      data: { score: data.score },
     });
 
-    // Return the updated player object
-    return updated;
+    // Return the updated player data as a JSON response
+    return Response.json(updated);
   });
 }
 
-// Define an asynchronous DELETE function to handle HTTP DELETE requests
+/**
+ * Handles HTTP DELETE requests to remove a player record.
+ *
+ * @param req - The incoming request object.
+ * @param context - Contains parameters, specifically the player ID.
+ * @returns A promise that resolves to a Response object.
+ */
 export async function DELETE(
-  _: NextRequest, // Incoming request object (underscore used to ignore parameter)
-  context: { params: { id: string } } // Destructure parameters to extract player ID
-) {
-  // Use handleApi utility function for error handling or response formatting
-  return handleApi(() =>
-    // Delete the player record from the database using Prisma client
-    prisma.player.delete({
-      where: { id: context.params.id }, // Target player by ID
-    })
-  );
+  req: NextRequest,
+  context: { params: Params }
+): Promise<Response> {
+  return handleApi(async () => {
+    // Destructure and await the ID from the context parameters
+    const { id } = await context.params;
+
+    // Perform the delete operation in the database using Prisma
+    await prisma.player.delete({
+      where: { id },
+    });
+
+    // Return a confirmation message as a JSON response
+    return Response.json({ message: "Player deleted" });
+  });
 }
