@@ -1,0 +1,25 @@
+# Define the services that make up the application
+services:
+  # Define a service named 'db'
+  db:
+    # Use the official PostgreSQL image, version 15
+    image: postgres:15
+    # Always restart the container unless it is explicitly stopped
+    restart: always
+    # Assign a name to the container for easy identification
+    container_name: leaderboard-db
+    # Set environment variables for the PostgreSQL instance
+    environment:
+      POSTGRES_USER: postgres # User name for the database
+      POSTGRES_PASSWORD: postgres # Password for the database user
+      POSTGRES_DB: leaderboarddb # Name of the default database to be created
+    # Map port 5432 on the host to port 5432 on the container
+    ports:
+      - "5432:5432"
+    # Mount a named volume to persist PostgreSQL data
+    volumes:
+      - pgdata:/var/lib/postgresql/data # Maps the volume 'pgdata' to the PostgreSQL data directory
+
+# Declare a named volume to persist PostgreSQL data across container restarts
+volumes:
+  pgdata:
