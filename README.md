@@ -131,3 +131,58 @@ Input Validation ✅ Zod everywhere
 Error Handling ✅ Centralized, safe messages
 Deployment Seed ✅ Token-protected endpoint
 Testability ✅ Ready for manual + automated tests
+
+
+| Feature                                              | Status | Notes                                        |
+| ---------------------------------------------------- | ------ | -------------------------------------------- |
+| PostgreSQL via Docker                                | ✅      | Portable, isolated DB                        |
+| Prisma ORM                                           | ✅      | Type-safe, SQL injection safe                |
+| Schema with `@updatedAt`, `@db.VarChar`, `createdAt` | ✅      | Best practices in Prisma                     |
+| API Layer                                            | ✅      | RESTful, modular, error-handled              |
+| Input Validation with Zod                            | ✅      | Prevents bad data                            |
+| Central Error Handling                               | ✅      | `handleApi()` wraps routes                   |
+| Secure Seed Endpoint                                 | ✅      | Protected by token, perfect for demo seeding |
+| Environment Variable Validation                      | ✅      | Parse `.env` safely with Zod                 |
+| Logging + Stacktrace Safety                          | ✅      | Logs server-side, hides from client          |
+| Auto Refresh / Real-time Ready                       | ✅      | SWR integrated, can easily swap for sockets  |
+| Dockerized                                           | ✅      | Docker Compose handles Postgres and app      |
+| Deployment Ready                                     | ✅      | Buildable, seedable, portable                |
+
+🐳 DOCKER — Running the Full Stack
+✅ When Using Docker Compose
+
+No need to run npm run dev manually.
+You just run:
+
+docker-compose up --build
+
+And it will:
+
+    Spin up Postgres (leaderboard-db)
+
+    Build and run Next.js backend/frontend (web)
+
+    Expose the app at: http://localhost:3000
+
+    DB is available at: localhost:5432 (or mapped port)
+
+    API endpoints work instantly (e.g. /api/player)
+
+🧪 Post-Build: Seeding in Production
+
+To seed your hosted app (demo or prod):
+
+curl -X POST https://your-domain.com/api/seed?token=demo123
+
+    ⚠️ Only run that once. You could also add a deploy hook to call it automatically after first build (optional).
+
+professional-grade backend tests using:
+✅ Stack:
+
+    Jest – unit & integration test runner
+
+    ts-jest – TypeScript support
+
+    Supertest – HTTP assertions on Next.js API
+
+    Prisma test database – safe isolation from dev/prod DB
