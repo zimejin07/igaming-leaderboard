@@ -1,19 +1,14 @@
 import useSWR from "swr";
+import { fetchPlayers } from "@/lib/api";
 
-export const useLeaderboard = () => {
-  const fetcher = async () => {
-    const res = await fetch("/api/player");
-    return res.json();
-  };
-
-  const { data, error, mutate } = useSWR("/api/player", fetcher, {
-    refreshInterval: 10000, // auto-refresh every 10s
+export function useLeaderboard() {
+  const { data, error, isLoading } = useSWR("/api/player", fetchPlayers, {
+    refreshInterval: 10000,
   });
 
   return {
     players: data || [],
-    isLoading: !data && !error,
     error,
-    mutate,
+    isLoading,
   };
-};
+}

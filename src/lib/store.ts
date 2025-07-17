@@ -2,10 +2,11 @@
 import { create } from "zustand";
 
 // Define a TypeScript type for a Player object with properties: id, name, score, and updatedAt
-type Player = {
+export type Player = {
   id: string;
   name: string;
   score: number;
+  avatar?: string;
   updatedAt: string;
 };
 

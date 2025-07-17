@@ -13,7 +13,9 @@ export default function TopThree({ players }: { players: Player[] }) {
           <img
             src={
               p.avatar ||
-              `https://avatars.dicebear.com/api/bottts/${p.name}.svg`
+              `https://api.dicebear.com/9.x/adventurer/svg?seed=${encodeURIComponent(
+                p.name
+              )}`
             }
             alt={p.name}
             className="mx-auto w-20 h-20 rounded-full"

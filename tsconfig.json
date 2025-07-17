@@ -1,28 +1,71 @@
 {
   "compilerOptions": {
+    // Specify ECMAScript target version: ES2017
     "target": "ES2017",
+
+    // Specify library files to be included in the compilation
     "lib": ["dom", "dom.iterable", "esnext"],
+
+    // Allow JavaScript files to be compiled
     "allowJs": true,
+
+    // Skip type checking of all declaration files (.d.ts)
     "skipLibCheck": true,
+
+    // Enable all strict type-checking options
     "strict": true,
+
+    // Raise error on expressions and declarations with an implied 'any' type
+    "noImplicitAny": true,
+
+    // Enable strict null checks
+    "strictNullChecks": true,
+
+    // Disallow inconsistently-cased references to the same file
+    "forceConsistentCasingInFileNames": true,
+
+    // Do not emit outputs
     "noEmit": true,
+
+    // Enables interoperability between CommonJS and ES Modules
     "esModuleInterop": true,
+
+    // Specify module code generation: esnext (latest version)
     "module": "esnext",
+
+    // Determine how modules get resolved: using bundler's logic
     "moduleResolution": "bundler",
+
+    // Include modules imported with '.json' extension
     "resolveJsonModule": true,
+
+    // Treat each file as a separate module
     "isolatedModules": true,
+
+    // Preserve JSX syntax in output for further processing (e.g., by React)
     "jsx": "preserve",
+
+    // Enable incremental compilation to improve performance
     "incremental": true,
+
+    // Configure plugins to use, here it's set to use Next.js plugin
     "plugins": [
       {
-        "name": "next"
+        "name": "next" // Plugin specific to Next.js framework
       }
     ],
+
+    // Base directory to resolve non-relative module names
     "baseUrl": ".",
+
+    // Define alias paths for module resolution
     "paths": {
       "@/*": ["./src/*"]
     }
   },
+  // Files or patterns to include in the program
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+
+  // Exclude 'node_modules' directory from compilation
   "exclude": ["node_modules"]
 }
