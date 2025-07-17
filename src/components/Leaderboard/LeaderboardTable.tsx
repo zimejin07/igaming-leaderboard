@@ -21,7 +21,14 @@ export default function LeaderboardTable({ players }: { players: Player[] }) {
           {players.map((p, idx) => (
             <tr key={p.id} className="border-t border-[#1d2235]">
               <td className="px-4 py-3">{idx + 4}</td>
-              <td className="px-4 py-3">{p.name}</td>
+              <td className="px-4 py-3 flex items-center gap-2">
+                <img
+                  src={`https://avatars.dicebear.com/api/bottts/${p.name}.svg`}
+                  alt={p.name}
+                  className="w-6 h-6 rounded-full"
+                />
+                {p.name}
+              </td>
               <td className="px-4 py-3">{p.score.toLocaleString()}</td>
               <td className="px-4 py-3 text-xs text-gray-400">
                 {new Date(p.updatedAt).toLocaleString()}

@@ -11,10 +11,14 @@ export default function TopThree({ players }: { players: Player[] }) {
       {players.map((p, idx) => (
         <div key={p.name} className="bg-[#141927] p-4 rounded-xl shadow-md">
           <img
-            src={p.avatar || `/avatars/${idx + 1}.png`}
+            src={
+              p.avatar ||
+              `https://avatars.dicebear.com/api/bottts/${p.name}.svg`
+            }
             alt={p.name}
             className="mx-auto w-20 h-20 rounded-full"
           />
+
           <h3 className="mt-2 text-lg font-bold">{p.name}</h3>
           <p className="text-sm text-gray-400">Score {p.score}</p>
           <div className="mt-2 text-blue-400 text-lg font-semibold">
