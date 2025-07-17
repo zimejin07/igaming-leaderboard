@@ -4,30 +4,57 @@ services:
   db:
     # Use the official PostgreSQL image, version 15
     image: postgres:15
+
     # Always restart the container unless it is explicitly stopped
     restart: always
+
     # Assign a name to the container for easy identification
     container_name: leaderboard-db
+
     # Set environment variables for the PostgreSQL instance
     environment:
       POSTGRES_USER: postgres # User name for the database
       POSTGRES_PASSWORD: postgres # Password for the database user
       POSTGRES_DB: leaderboarddb # Name of the default database to be created
-    # Map port 5432 on the host to port 5432 on the container
+
+    # Map port 5432 on the host to port 5432 on the container to allow database access
     ports:
       - "5432:5432"
-    # Mount a named volume to persist PostgreSQL data
+
+    # Specify an external file to load additional environment variables
+    env_file:
+      - .env
+
+    # Mount a named volume to persist PostgreSQL data, ensuring data persists across restarts
     volumes:
       - pgdata:/var/lib/postgresql/data # Maps the volume 'pgdata' to the PostgreSQL data directory
 
+  # Define a service named 'web', presumably your application server
   web:
+    # Build the Docker image from the current directory's Dockerfile
     build: .
+
+    # Expose port 3000 on the host and map it to port 3000 in the container
     ports:
       - "3000:3000"
+
+    # Provide necessary environment variables to connect to the database and set application parameters
     environment:
-      - DATABASE_URL=postgresql://postgres:postgres@db:5432/leaderboarddb
-      - NODE_ENV=production
-      - SEED_SECRET=demo123
+      - DATABASE_URL=postgresql://postgres:postgres@db:5432/leaderboarddb # Connection string for the database
+      - NODE_ENV=production # Set the environment mode to production
+      - SEED_SECRET=demo123 # Secret key used for seeding the database (for demo purposes)
+
+    # Define the command to run when the container starts
+    # This command generates Prisma client, applies schema changes, seeds the database, and then starts the app
+    command: >
+      sh -c "
+        npx prisma generate &&          # Generate the Prisma client
+        npx prisma db push &&           # Push schema changes to the database
+        npx prisma db seed &&           # Seed the database with initial data
+        npm run start                   # Start the application
+      "
+
+    # Ensure the 'web' service starts only after the 'db' service is ready
     depends_on:
       - db
 

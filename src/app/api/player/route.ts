@@ -6,15 +6,23 @@ import prisma from "@/lib/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 
-// Define an asynchronous function to handle GET requests
-export async function GET() {
-  // Fetch the top 10 players ordered by their score in descending order
-  const topPlayers = await prisma.player.findMany({
-    orderBy: { score: "desc" },
-    take: 10,
-  });
-  // Return the fetched players as a JSON response
-  return NextResponse.json(topPlayers);
+export async function GET(): Promise<Response> {
+  try {
+    // Fetch the top 10 players ordered by score in descending order from the database
+    const players = await prisma.player.findMany({
+      orderBy: { score: "desc" }, // Order players by their score, highest first
+      take: 10, // Limit the results to the top 10 players
+    });
+
+    // Return the list of players as a JSON response
+    return Response.json(players);
+  } catch (error) {
+    // Log any errors to the console, tagged with the endpoint for easier debugging
+    console.error("[GET /api/player]", error);
+
+    // Return an error message and a 500 status code if an exception occurs
+    return Response.json({ error: "Internal Server Error" }, { status: 500 });
+  }
 }
 
 // Define a schema using Zod for input validation
@@ -36,8 +44,8 @@ export async function POST(req: NextRequest) {
     // Create a new player entry in the database using Prisma client
     const newPlayer = await prisma.player.create({
       data: {
-        name: data.name, // Assign player's name from parsed data
-        score: data.score, // Assign player's score from parsed data
+        name: data.name,
+        score: data.score,
       },
     });
 

@@ -1,4 +1,3 @@
-// Import the PrismaClient class from the '@prisma/client' package
 import { PrismaClient } from "@prisma/client";
 
 // Define a global variable for storing a PrismaClient instance in a node's globalThis object
