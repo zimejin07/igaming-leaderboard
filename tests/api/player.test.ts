@@ -70,4 +70,43 @@ describe("/api/player", () => {
     // Expect the response status code to be 400 (Bad Request)
     expect(res.status).toBe(400);
   });
+
+  // Test case for updating a player's score using the PUT method.
+  it("PUT updates a player's score", async () => {
+    // Retrieve the first player record with the name "Bob" from the database.
+    const player = await prisma.player.findFirst({ where: { name: "Bob" } });
+
+    // If a player with the name "Bob" is found, perform a PUT request to update their score.
+    const res = await request(baseUrl)
+      .put(`/api/player/${player?.id}`) // Construct the API endpoint using the player's ID.
+      .send({ score: 150 }) // Send the new score (150) in the request body.
+      .set("Content-Type", "application/json"); // Set the correct content type for the request.
+
+    // Expect the HTTP status of the response to be 200, indicating success.
+    expect(res.status).toBe(200);
+    // Expect the updated score in the response body to match the new score (150).
+    expect(res.body.score).toBe(150);
+  });
+
+  it("DELETE removes a player", async () => {
+  const player = await prisma.player.findFirst({ where: { name: "Charlie" } });
+
+  const res = await request(baseUrl).delete(`/api/player/${player?.id}`);
+  expect(res.status).toBe(200);
+
+  const deleted = await prisma.player.findUnique({ where: { id: player?.id } });
+  expect(deleted).toBeNull();
+});
+
+it("PUT fails with invalid score", async () => {
+  const player = await prisma.player.findFirst();
+
+  const res = await request(baseUrl)
+    .put(`/api/player/${player?.id}`)
+    .send({ score: -50 })
+    .set("Content-Type", "application/json");
+
+  expect(res.status).toBe(400);
+});
+
 });

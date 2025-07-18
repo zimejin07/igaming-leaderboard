@@ -1,201 +1,198 @@
-1.5 Production Seed Strategy (IMPORTANT)
+# iGaming Leaderboard App
 
-🔒 Your DB will not be seeded in Vercel — because there's no build-time DB access.
+A full-stack application for managing and displaying a real-time leaderboard. Built using Next.js (App Router), PostgreSQL, Prisma, Docker, and hardened with security, validation, and testing best practices.
 
-Solution:
+---
 
-    Add a POST /api/seed secure admin-only endpoint
+## Overview
 
-    It runs the seed script inside the running container
+This app allows:
 
-Call once from frontend or curl:
-curl -X POST https://your-deployment.com/api/seed?token=demo123
+- Public users to view a leaderboard of the top 10 players
+- Admins to add, update, or delete players
+- Secure access to protected admin routes
+- Real-time auto-refresh using SWR
+- Dockerized full-stack deployment with seed control
 
-YES — your backend is now hardened and absolutely on par with what a senior backend engineer would expect for a scoped project like this.
+---
 
-Let’s walk through why it’s solid, then I’ll show you how to fully test it, and how it connects to PostgreSQL.
-✅ WHY YOUR BACKEND IS PRODUCTION-GRADE NOW
-📐 Architecture
+## Tech Stack
 
-    ✔️ Modular file structure (/app/api/player, lib/prisma, lib/apiWrapper)
+- **Frontend**: Next.js 14 (App Router), TailwindCSS, SWR
+- **Backend**: REST API, Prisma ORM
+- **Database**: PostgreSQL (via Docker)
+- **Auth**: Token-based middleware
+- **Validation**: Zod
+- **Testing**: Jest, Supertest
+- **Infrastructure**: Docker + Docker Compose
 
-    ✔️ RESTful endpoints with semantically correct HTTP methods (GET, POST, PUT, DELETE)
+---
 
-    ✔️ Single-responsibility principle followed in all route handlers
+### Running Locally
 
-    ✔️ Prisma ORM — type-safe, battle-tested, SQL-injection safe
+# 1. Clone the repository
+git clone https://github.com/your-username/igaming-leaderboard.git
+cd igaming-leaderboard
 
-🧱 Infrastructure + PostgreSQL Integration
+# 2. Install dependencies
+cp .env.example .env
+npm install
 
-    ✔️ PostgreSQL running via Docker = portable and isolated
+# 3. Start with Docker (PostgreSQL + Web App)
+docker-compose up --build
 
-    ✔️ Prisma connects to PostgreSQL via DATABASE_URL env var
+# 4. Visit the app
+http://localhost:3000
 
-    ✔️ Prisma client is singleton-safe (avoids dev reload issues)
-
-    ✔️ DB schema well-defined with @updatedAt, @default(now()), @db.VarChar(100)
-
-    ✔️ seed.ts populates your DB for local or hosted demos
-
-    ✔️ Production seed endpoint (/api/seed) with token auth for secure remote seeding
-
-🔐 Security & Stability
-
-    ✔️ Zod validation at every input level
-
-    ✔️ API wrapper handles 500 errors, logs server-side issues
-
-    ✔️ Environment validation to prevent missing .env in prod
-
-    ✔️ Server logs errors, doesn’t expose stack traces to user
-
-    ✔️ Only allows expected inputs (e.g. can’t send strings for scores)
-
-1.  Manual API Tests
-
-Use [REST Client (VSCode)] or [Postman].
-
-📁 /tests/api.http
-
-### Get top 10 players
-
-GET http://localhost:3000/api/player
-
-### Add new player
-
-POST http://localhost:3000/api/player
-Content-Type: application/json
-
-{
-"name": "Zim",
-"score": 88
-}
-
-### Update a player's score
-
-PUT http://localhost:3000/api/player/<player-id>
-Content-Type: application/json
-
-{
-"score": 100
-}
-
-### Delete a player
-
-DELETE http://localhost:3000/api/player/<player-id>
-
-### Seed DB (for production test only)
-
-POST http://localhost:3000/api/seed?token=demo123
-
-✅ 2. View Live DB
-
-Use Prisma Studio:
-
-npx prisma studio
-
-Or connect to Postgres with:
-
-psql -U postgres -h localhost -d leaderboarddb
-SELECT \* FROM "Player";
-
-✅ Prisma: Type-safe query builder
-
-You defined this in /prisma/schema.prisma:
-
-model Player {
-id String @id @default(cuid())
-name String @db.VarChar(100)
-score Int
-updatedAt DateTime @updatedAt
-createdAt DateTime @default(now())
-}
-
-Every time you call prisma.player.findMany() in your API:
-
-    Prisma translates it to a parameterized SQL query
-
-    Sends it to PostgreSQL via the connection in .env
-
-    Returns typed result to your handler
-
-This is safer than raw SQL, avoids injection, and gives auto-completion.
-
-Summary
-Area Status
-DB ✅ Dockerized Postgres + Prisma
-Schema ✅ Validated, indexed, normalized
-ORM ✅ Prisma, type-safe
-API ✅ RESTful, secure, structured
-Input Validation ✅ Zod everywhere
-Error Handling ✅ Centralized, safe messages
-Deployment Seed ✅ Token-protected endpoint
-Testability ✅ Ready for manual + automated tests
+# 5. Seed the DB if not auto-seeded
+curl -X POST http://localhost:3000/api/seed?token=demo123
 
 
-| Feature                                              | Status | Notes                                        |
-| ---------------------------------------------------- | ------ | -------------------------------------------- |
-| PostgreSQL via Docker                                | ✅      | Portable, isolated DB                        |
-| Prisma ORM                                           | ✅      | Type-safe, SQL injection safe                |
-| Schema with `@updatedAt`, `@db.VarChar`, `createdAt` | ✅      | Best practices in Prisma                     |
-| API Layer                                            | ✅      | RESTful, modular, error-handled              |
-| Input Validation with Zod                            | ✅      | Prevents bad data                            |
-| Central Error Handling                               | ✅      | `handleApi()` wraps routes                   |
-| Secure Seed Endpoint                                 | ✅      | Protected by token, perfect for demo seeding |
-| Environment Variable Validation                      | ✅      | Parse `.env` safely with Zod                 |
-| Logging + Stacktrace Safety                          | ✅      | Logs server-side, hides from client          |
-| Auto Refresh / Real-time Ready                       | ✅      | SWR integrated, can easily swap for sockets  |
-| Dockerized                                           | ✅      | Docker Compose handles Postgres and app      |
-| Deployment Ready                                     | ✅      | Buildable, seedable, portable                |
+## Features
 
-🐳 DOCKER — Running the Full Stack
-✅ When Using Docker Compose
+### Leaderboard
 
-No need to run npm run dev manually.
-You just run:
+- Displays top 10 players
+- Shows name, score, last updated
+- Auto-refresh enabled
+- Responsive UI
+- Avatar support (DiceBear)
+
+### Admin Dashboard
+
+- Add, update, delete players
+- Form validation with Zod
+- Protected route (`/admin`)
+- Secure login (`/login`)
+- Logout functionality
+
+---
+
+## Authentication
+
+Admin Login (hardcoded for demo):
+
+- **Username**: `admin`
+- **Password**: `demo123`
+
+A valid login sets a token (`demo-token`) in local storage, which is validated by `middleware.ts`.
+
+---
+
+## Production Seed Strategy
+
+Vercel cannot access a DB during build, so seeding is handled via a **secure endpoint**:
+
+```bash
+curl -X POST https://your-domain.com/api/seed?token=demo123
+```
+
+### API Endpoints
+
+Method	Endpoint	Description
+GET	/api/player	Get top 10 players
+POST	/api/player	Add a new player
+PUT	/api/player/:id	Update a player’s score
+DELETE	/api/player/:id	Delete a player
+POST	/api/seed	Seed DB (token protected)
+
+---
+
+Docker Setup
+Start Application
 
 docker-compose up --build
 
-And it will:
+### Services started:
 
-    Spin up Postgres (leaderboard-db)
+PostgreSQL at localhost:5432
 
-    Build and run Next.js backend/frontend (web)
+Web app at http://localhost:3000
 
-    Expose the app at: http://localhost:3000
+---
 
-    DB is available at: localhost:5432 (or mapped port)
+### Testing
 
-    API endpoints work instantly (e.g. /api/player)
+Run tests locally:
 
-🧪 Post-Build: Seeding in Production
+npm run test
 
-To seed your hosted app (demo or prod):
+Or via Docker (using test-runner service):
 
-curl -X POST https://your-domain.com/api/seed?token=demo123
+docker compose run --rm test-runner
 
-    ⚠️ Only run that once. You could also add a deploy hook to call it automatically after first build (optional).
+---
 
-professional-grade backend tests using:
-✅ Stack:
+### Tests cover:
 
-    Jest – unit & integration test runner
+    API integration via Supertest
 
-    ts-jest – TypeScript support
+    Prisma test DB isolation
 
-    Supertest – HTTP assertions on Next.js API
+    Validation failures and error codes
 
-    Prisma test database – safe isolation from dev/prod DB
+---
 
+### Prisma
 
-     Design Decisions
+Model defined in schema.prisma:
 
-    Next.js App Router for future scalability and performance
+model Player {
+  id        String   @id @default(cuid())
+  name      String   @db.VarChar(100)
+  score     Int
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+}
 
-    Prisma + PostgreSQL instead of in-memory for real-world readiness
+Seed script located in /prisma/seed.ts.
 
-    Manual auth to demonstrate logic clearly without 3rd-party complexity
+Run locally with:
 
-    Docker-first setup to avoid local dependency issues
+npx prisma db push && npx prisma db seed
 
-    Zod validation to ensure strict type safety on form & API
+Or use:
+
+npx prisma studio
+
+---
+
+### Project Structure
+
+---
+
+/app
+  /leaderboard      → Public leaderboard page
+  /admin            → Admin dashboard (protected)
+  /login            → Login form
+  /api/player       → RESTful routes
+  /api/seed         → Secure seed endpoint
+
+/lib
+  /store.ts         → Zustand global store
+  /hooks            → Custom SWR leaderboard hook
+  /prisma.ts        → Prisma client singleton
+
+/tests              → Jest + Supertest test suite
+/prisma             → Prisma schema and seed
+/middleware.ts      → Route protection for /admin
+
+---
+
+Known Limitations
+
+    Admin credentials are hardcoded (demo purposes)
+
+    Token-based auth is for demonstration only (no sessions or JWT)
+
+    No persistent user login (token is stored in localStorage)
+
+    Avatar service uses open API (DiceBear)
+
+---
+
+<p align="center">
+  <img src="/public/preview.png" alt="App Preview" width="300" />
+</p>
+
+---
