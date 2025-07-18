@@ -186,3 +186,16 @@ professional-grade backend tests using:
     Supertest – HTTP assertions on Next.js API
 
     Prisma test database – safe isolation from dev/prod DB
+
+
+     Design Decisions
+
+    Next.js App Router for future scalability and performance
+
+    Prisma + PostgreSQL instead of in-memory for real-world readiness
+
+    Manual auth to demonstrate logic clearly without 3rd-party complexity
+
+    Docker-first setup to avoid local dependency issues
+
+    Zod validation to ensure strict type safety on form & API
