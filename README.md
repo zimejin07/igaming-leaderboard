@@ -29,10 +29,23 @@ This app allows:
 
 ---
 
+## Development Strategy
+
+This project followed an agile, single-sprint delivery model with a focus on rapidly releasing a functional MVP. All core features were prioritized and delivered within a single development cycle.
+
+### Release Strategy
+
+- Focused on shipping a fully working full-stack app within one sprint
+- Hardened backend and protected admin flows for demo safety
+- Leveraged Docker for portability and consistent local setups
+- Used seed endpoints to support live demo testing
+
 ### Running Locally
 
+```bash
 # 1. Clone the repository
 git clone https://github.com/zimejin07/igaming-leaderboard.git
+
 cd igaming-leaderboard
 
 # 2. Install dependencies
@@ -42,11 +55,12 @@ npm install
 docker-compose up --build
 
 # 4. Visit the app
+# Open your browser and go to:
 http://localhost:3000
 
 # 5. Seed the DB if not auto-seeded
 curl -X POST http://localhost:3000/api/seed?token=demo123
-
+```
 
 ## Authentication
 
@@ -61,12 +75,13 @@ A valid login sets a token (`demo-token`) in local storage, which is validated b
 
 ### API Endpoints
 
-Method	Endpoint	Description
-GET	/api/player	Get top 10 players
-POST	/api/player	Add a new player
-PUT	/api/player/:id	Update a player’s score
-DELETE	/api/player/:id	Delete a player
-POST	/api/seed	Seed DB (token protected)
+| Method | Endpoint           | Description                  |
+|--------|--------------------|------------------------------|
+| GET    | /api/player        | Get top 10 players           |
+| POST   | /api/player        | Add a new player             |
+| PUT    | /api/player/:id    | Update a player’s score      |
+| DELETE | /api/player/:id    | Delete a player              |
+| POST   | /api/seed          | Seed DB (token protected)    |
 
 ---
 
@@ -74,36 +89,49 @@ POST	/api/seed	Seed DB (token protected)
 
 Start Application
 
+```bash
 docker-compose up --build
+```
 
 ### Services started:
 
-PostgreSQL at localhost:5432
-
-Web app at http://localhost:3000
+- PostgreSQL at `localhost:5432`
+- Web app at `http://localhost:3000`
 
 ---
 
 ### Testing
 
-Run tests locally via Docker (using test-runner service):
+Run tests locally:
 
-docker compose run --rm test-runner
+```bash
+npm run test
+```
+
+or via Docker (using test-runner service):
+
+```bash
+docker-compose --profile test run --rm test-runner
+```
 
 ---
 
 ### Tests cover:
 
-    API integration via Supertest
-
-    Prisma test DB isolation
-
-    Validation failures and error codes
+- API integration via Supertest
+- Prisma test DB isolation
+- Validation failures and error codes
 
 ---
 
 <p align="center">
-  <img src="/public/preview.png" alt="App Preview" width="600"  width="800"/>
+  <img src="/public/preview.png" alt="App Preview" width="600"/>
 </p>
 
 ---
+
+## Future Enhancements
+
+- Add motion and UI polish using animation libraries like Framer Motion or GSAP
+- Expand test coverage with additional API and integration tests
+- Optimize performance with query caching and pagination
