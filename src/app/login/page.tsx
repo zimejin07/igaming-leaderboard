@@ -3,10 +3,20 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
+interface Credentials {
+  username: string;
+  password: string;
+}
+
+const initialCredentials: Credentials = {
+  username: "admin",
+  password: "demo123",
+};
+
 export default function LoginPage() {
   const router = useRouter();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState<string>(initialCredentials.username);
+  const [password, setPassword] = useState<string>(initialCredentials.password);
   const [error, setError] = useState("");
 
   const handleLogin = async () => {
