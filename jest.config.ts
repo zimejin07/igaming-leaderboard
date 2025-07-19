@@ -16,8 +16,9 @@ const config: Config = {
   moduleFileExtensions: ["ts", "js"], // Allow both TypeScript (.ts) and JavaScript (.js) files
 
   transform: {
-    // Use ts-jest to transpile TypeScript files for testing.
-    "^.+.ts$": "ts-jest",
+    // Use babel-jest with next/babel presets to transpile
+    // both TypeScript and JavaScript files for testing.
+    "^.+.(ts|tsx|js|jsx)$": ["babel-jest", { presets: ["next/babel"] }],
   },
 
   // Scripts or modules to run before each test file is executed

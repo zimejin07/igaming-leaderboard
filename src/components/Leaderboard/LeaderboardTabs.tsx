@@ -17,7 +17,7 @@ export default function LeaderboardTabs() {
             active === type
               ? "bg-blue-600 text-white"
               : "bg-gray-800 text-gray-400"
-          } ${type === "monthly" ? "cursor-not-allowed opacity-50" : ""}`} // Styling for disabled button
+          } ${type === "monthly" ? "cursor-not-allowed opacity-50" : ""}`}
           disabled={type === "monthly"} // Disable the button for 'monthly'
         >
           {type.charAt(0).toUpperCase() + type.slice(1)}

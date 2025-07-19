@@ -3,7 +3,7 @@ import { handleApi } from "@/lib/apiWrapper";
 import prisma from "@/lib/prisma";
 
 // Import necessary modules and functions from Next.js, Prisma client, and Zod for validation
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import { z } from "zod";
 
 export async function GET(): Promise<Response> {

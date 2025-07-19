@@ -1,6 +1,6 @@
 # 🎮 iGaming Leaderboard App
 
-A full-stack application for managing and displaying a real-time leaderboard. Built using Next.js (App Router), PostgreSQL, Prisma, Docker, and hardened with security, validation, and testing best practices.
+A full-stack application for managing and displaying a real-time leaderboard, built using Next.js with App Router, PostgreSQL, Prisma, Docker, and hardened with security, validation, and testing best practices.
 
 ---
 
@@ -8,10 +8,10 @@ A full-stack application for managing and displaying a real-time leaderboard. Bu
 
 This app allows:
 
-- Public users to view a leaderboard of the top 10 players 🏆 
+- Public users to view a leaderboard of the top 10 players 🏆
 - Admins to add, update, or delete players 🛡️
 - Secure access to protected admin routes
-- Real-time auto-refresh using SWR 🔄 
+- Real-time auto-refresh using SWR 🔄
 - Dockerized full-stack deployment with seed control 🐳
 - Integration testing using Jest & Supertest 🧪
 
@@ -31,7 +31,7 @@ This app allows:
 
 ## Development Strategy
 
-This project followed an agile, single-sprint delivery model with a focus on rapidly releasing a functional MVP. All core features were prioritized and delivered within a single development cycle.
+This project followed an agile, single-sprint delivery model focusing on rapidly releasing a functional MVP. All core features were prioritized and delivered within a single development cycle.
 
 ### Release Strategy
 
@@ -45,7 +45,6 @@ This project followed an agile, single-sprint delivery model with a focus on rap
 ```bash
 # 1. Clone the repository
 git clone https://github.com/zimejin07/igaming-leaderboard.git
-
 cd igaming-leaderboard
 
 # 2. Install dependencies
@@ -69,19 +68,19 @@ Admin Login (hardcoded for demo):
 - **Username**: `admin`
 - **Password**: `demo123`
 
-A valid login sets a token (`demo-token`) in local storage, which is validated by `middleware.ts`.
+A valid login sets a token (`demo-token`) in local storage, validated by `middleware.ts`.
 
 ---
 
 ### API Endpoints
 
-| Method | Endpoint           | Description                  |
-|--------|--------------------|------------------------------|
-| GET    | /api/player        | Get top 10 players           |
-| POST   | /api/player        | Add a new player             |
-| PUT    | /api/player/:id    | Update a player’s score      |
-| DELETE | /api/player/:id    | Delete a player              |
-| POST   | /api/seed          | Seed DB (token protected)    |
+| Method | Endpoint        | Description                  |
+|--------|-----------------|------------------------------|
+| GET    | /api/player     | Get top 10 players           |
+| POST   | /api/player     | Add a new player             |
+| PUT    | /api/player/:id | Update a player’s score      |
+| DELETE | /api/player/:id | Delete a player              |
+| POST   | /api/seed       | Seed DB (token protected)    |
 
 ---
 
@@ -102,7 +101,7 @@ docker-compose up --build
 
 ### Testing
 
-Run tests locally:
+Run tests locally (Preferred for speed, but ensure you first execute the docker setup):
 
 ```bash
 npm run test
@@ -115,6 +114,16 @@ docker-compose --profile test run --rm test-runner
 ```
 
 ---
+
+### Scripts
+
+- **`test`**: Executes all tests using Jest.
+- **`test:ui`**: Runs frontend/UI tests located in the `__tests__` directory.
+- **`test:api`**: Executes API-related tests by running a Docker container named `test-runner`.
+- **`docker:start`**: Builds and starts up all Docker services defined in the Compose file.
+- **`docker:stop`**: Stops and removes all running Docker containers.
+- **`docker:test`**: Builds and runs tests specified under the test profile in Docker Compose, stopping upon completion and returning the exit code of the `test-runner`.
+- **`seed`**: Executes a seed script with TypeScript (`tsx`) to populate the database.
 
 ### Tests cover:
 
@@ -133,5 +142,4 @@ docker-compose --profile test run --rm test-runner
 ## Future Enhancements
 
 - Add motion and UI polish using animation libraries like Framer Motion or GSAP
-- Expand test coverage with additional API and integration tests
 - Optimize performance with query caching and pagination

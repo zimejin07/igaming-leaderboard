@@ -67,5 +67,7 @@
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
 
   // Exclude 'node_modules' directory from compilation
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+
+  "types": ["jest", "node", "@testing-library/jest-dom"]
 }

@@ -8,7 +8,7 @@ interface Player {
 export default function TopThree({ players }: { players: Player[] }) {
   return (
     <div className="grid grid-cols-3 gap-4 text-center">
-      {players.map((p, idx) => (
+      {players.map((p) => (
         <div key={p.name} className="bg-[#141927] p-4 rounded-xl shadow-md">
           <img
             src={
