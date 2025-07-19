@@ -1,7 +1,7 @@
 import { NextRequest } from "next/server";
-import { prisma } from "@/lib/prisma"; // Import the Prisma client to interact with the database
-import { z } from "zod"; // Import Zod for schema validation
-import { handleApi } from "@/lib/apiWrapper"; // Import a utility to handle API requests
+import { prisma } from "@/lib/prisma";
+import { z } from "zod";
+import { handleApi } from "@/lib/apiWrapper";
 
 // Define a schema using Zod to validate that 'score' is an integer in the request body
 const updateSchema = z.object({

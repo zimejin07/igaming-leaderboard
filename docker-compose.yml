@@ -1,4 +1,5 @@
-# Define the services that make up the application
+version: "3.9"
+
 services:
   # Main production database
   db:
@@ -10,7 +11,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: leaderboarddb
     ports:
-      - "5432:5432"
+      - "5434:5432" # Changed to 5434 to avoid local conflicts
     env_file:
       - .env
     volumes:
@@ -21,7 +22,7 @@ services:
     image: postgres:15
     container_name: leaderboard-test-db
     ports:
-      - "5433:5432"
+      - "5435:5432" # Avoid conflict with local Postgres
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -48,7 +49,7 @@ services:
     depends_on:
       - db
 
-  # Jest test runner (automatically sets up DB and runs test suite)
+  # Jest test runner
   test-runner:
     build:
       context: .
@@ -62,12 +63,11 @@ services:
     depends_on:
       - test-db
     environment:
-      DATABASE_URL: postgresql://postgres:postgres@test-db:5432/leaderboard_test
-      NODE_ENV: test
+      - DATABASE_URL=postgresql://postgres:postgres@test-db:5432/leaderboard_test
+      - NODE_ENV=test
     volumes:
       - .:/app
 
-# Named volumes to persist PostgreSQL data
 volumes:
   pgdata:
   test_pgdata:

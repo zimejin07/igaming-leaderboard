@@ -1,7 +1,7 @@
 // Import necessary modules and types
-import { NextRequest } from "next/server"; // Import Next.js request type
-import { prisma } from "@/lib/prisma"; // Import Prisma client instance
-import { handleApi } from "@/lib/apiWrapper"; // Import API wrapper utility
+import { NextRequest } from "next/server"; 
+import { prisma } from "@/lib/prisma";
+import { handleApi } from "@/lib/apiWrapper";
 
 // Define a constant for the secret token used for authorization
 const SECRET = process.env.SEED_SECRET || "demo123"; // Default to 'demo123' if not set in environment variables
