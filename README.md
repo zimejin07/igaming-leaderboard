@@ -172,7 +172,7 @@ npx prisma studio
 ---
 
 <p align="center">
-  <img src="/public/preview.png" alt="App Preview" width="300" />
+  <img src="/public/preview.png" alt="App Preview" width="600"  width="800"/>
 </p>
 
 ---
