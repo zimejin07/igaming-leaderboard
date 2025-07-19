@@ -12,6 +12,7 @@ export async function GET(): Promise<Response> {
     const players = await prisma.player.findMany({
       orderBy: { score: "desc" }, // Order players by their score, highest first
       take: 10, // Limit the results to the top 10 players
+      distinct: ['name'], // Ensure one row per name
     });
 
     // Return the list of players as a JSON response
