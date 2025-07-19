@@ -141,5 +141,4 @@ docker-compose --profile test run --rm test-runner
 
 ## Future Enhancements
 
-- Add motion and UI polish using animation libraries like Framer Motion or GSAP
 - Optimize performance with query caching and pagination
