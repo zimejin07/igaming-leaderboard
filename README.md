@@ -31,11 +31,10 @@ This app allows:
 ### Running Locally
 
 # 1. Clone the repository
-git clone https://github.com/your-username/igaming-leaderboard.git
+git clone https://github.com/zimejin07/igaming-leaderboard.git
 cd igaming-leaderboard
 
 # 2. Install dependencies
-cp .env.example .env
 npm install
 
 # 3. Start with Docker (PostgreSQL + Web App)
@@ -79,14 +78,6 @@ A valid login sets a token (`demo-token`) in local storage, which is validated b
 
 ---
 
-## Production Seed Strategy
-
-Vercel cannot access a DB during build, so seeding is handled via a **secure endpoint**:
-
-```bash
-curl -X POST https://your-domain.com/api/seed?token=demo123
-```
-
 ### API Endpoints
 
 Method	Endpoint	Description
@@ -98,7 +89,8 @@ POST	/api/seed	Seed DB (token protected)
 
 ---
 
-Docker Setup
+### Docker Setup
+
 Start Application
 
 docker-compose up --build
@@ -176,18 +168,6 @@ npx prisma studio
 /tests              → Jest + Supertest test suite
 /prisma             → Prisma schema and seed
 /middleware.ts      → Route protection for /admin
-
----
-
-Known Limitations
-
-    Admin credentials are hardcoded (demo purposes)
-
-    Token-based auth is for demonstration only (no sessions or JWT)
-
-    No persistent user login (token is stored in localStorage)
-
-    Avatar service uses open API (DiceBear)
 
 ---
 
