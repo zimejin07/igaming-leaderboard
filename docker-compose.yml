@@ -55,6 +55,7 @@ services:
       context: .
     command: >
       sh -c "
+        chmod -R 777 node_modules &&
         npx prisma generate &&
         npx prisma db push &&
         npx prisma db seed &&
