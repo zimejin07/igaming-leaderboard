@@ -10,16 +10,12 @@ export async function handleApi<T>(fn: () => Promise<T>): Promise<Response> {
     // Execute the passed asynchronous function and await its result
     const result = await fn();
 
-    // Return the result wrapped in a JSON response
     return new Response(JSON.stringify(result), {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
   } catch (error) {
-    // Log the caught error to the server console
     console.error("[API ERROR]", error);
-
-    // Respond with a generic internal server error message and 500 status code
     return new Response(JSON.stringify({ error: "Internal Server Error" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },

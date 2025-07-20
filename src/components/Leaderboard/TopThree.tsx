@@ -22,18 +22,17 @@ export default function TopThree({ players }: Props) {
       setShowConfetti(false); // Hide confetti after the timer expires
     }, 10000);
 
-    // Cleanup function to clear the timeout if the component unmounts or re-renders
     return () => clearTimeout(timer);
   }, []); // Empty dependency array to run effect only once on mount
 
   const cardVariant: Variants = {
     hidden: {
-      opacity: 0, // Initial opacity for the hidden state
-      scale: 0.9, // Initial scale for a slightly smaller appearance
-      y: 20, // Initial vertical position (slightly shifted down)
+      opacity: 0,
+      scale: 0.9,
+      y: 20,
     },
     visible: (i: number) => ({
-      opacity: 1, // Fully opaque in the visible state
+      opacity: 1,
       scale: i === 0 ? 1.1 : 1, // Slightly larger scale for the first item
       y: 0, // Reset vertical position to align with the view
       transition: {

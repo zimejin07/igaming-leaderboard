@@ -23,22 +23,17 @@ export async function PUT(
   context: { params: Params }
 ): Promise<Response> {
   return handleApi(async () => {
-    // Destructure and await the ID from the context parameters
     const { id } = await context.params;
 
-    // Parse the JSON body of the request
     const body = await req.json();
 
-    // Validate the parsed data against the updateSchema
     const data = updateSchema.parse(body);
 
-    // Perform the update operation in the database using Prisma
     const updated = await prisma.player.update({
       where: { id },
       data: { score: data.score },
     });
 
-    // Return the updated player data as a JSON response
     return Response.json(updated);
   });
 }

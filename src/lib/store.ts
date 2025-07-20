@@ -1,7 +1,5 @@
-// Import the `create` function from the Zustand library to create a state management store
 import { create } from "zustand";
 
-// Define a TypeScript type for a Player object with properties: id, name, score, and updatedAt
 export type Player = {
   id: string;
   name: string;
@@ -24,7 +22,6 @@ export const usePlayerStore = create<Store>((set) => ({
   fetchPlayers: async () => {
     // Perform a GET request to the specified API endpoint to retrieve player data
     const res = await fetch("/api/player");
-    // Parse the response as JSON
     const data = await res.json();
     // Update the store's state with the fetched player data
     set({ players: data });
