@@ -8,8 +8,8 @@ A full-stack application for managing and displaying a real-time leaderboard, bu
 
 This app allows:
 
-- Public users to view a leaderboard of the top 10 players 🏆
-- Admins to add, update, or delete players 🛡️
+- **Public users** to view a leaderboard of the top 10 players 🏆
+- **Admins** to add, update, or delete players 🛡️
 - Secure access to protected admin routes
 - Real-time auto-refresh using SWR 🔄
 - Dockerized full-stack deployment with seed control 🐳
@@ -39,6 +39,30 @@ This project followed an agile, single-sprint delivery model focusing on rapidly
 - Hardened backend and protected admin flows for demo safety
 - Leveraged Docker for portability and consistent local setups
 - Used seed endpoints to support live demo testing
+
+### Design Decisions & Scalability Considerations
+
+#### Why Next.js Full-Stack
+
+- **Full-Stack Cohesion**: Next.js allows API routes and pages to live in the same codebase, simplifying development and avoiding duplication.
+- **Rapid MVP Delivery**: Ideal for a 1-sprint assignment — no extra infra needed to separate backend/frontend.
+- **Production Readiness**: Easily transitionable to Vercel, AWS Lambda, or Docker-hosted environments.
+- If required, backend logic (currently in `/app/api/player + lib/`) is modularized and ready to migrate to standalone Express/NestJS apps.
+
+#### Backend Architecture
+
+- **PostgreSQL via Docker**: More realistic than in-memory storage; simulates production data persistence.
+- **Prisma ORM**: Type-safe, SQL-injection-proof, schema-defined.
+
+#### AWS-Ready Deployment Paths
+
+- **Local Dev**: `docker-compose up --build` spins up full stack
+- **Self-hosted**: Docker-ready for deployment on EC2 or Railway
+- **Split Deployment** (e.g., AWS + S3 + EC2):
+  - **Frontend**: Export with `next export` or deploy to S3 + CloudFront
+  - **Backend**: Move lib/api logic to standalone Express/NestJS on EC2 or Lambda
+  - **DB**: PostgreSQL via AWS RDS
+  - **Routing**: Managed via API Gateway or NGINX
 
 ### Running Locally
 
@@ -86,7 +110,7 @@ A valid login sets a token (`demo-token`) in local storage, validated by `middle
 
 ### Docker Setup
 
-Start Application
+Start Application:
 
 ```bash
 docker-compose up --build
@@ -94,8 +118,8 @@ docker-compose up --build
 
 ### Services started:
 
-- PostgreSQL at `localhost:5432`
-- Web app at `http://localhost:3000`
+- **PostgreSQL** at `localhost:5432`
+- **Web app** at `http://localhost:3000`
 
 ---
 
