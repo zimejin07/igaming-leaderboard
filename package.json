@@ -12,7 +12,7 @@
     "test:watch": "jest --watch",
     "test:ui": "jest --testPathPatterns=__tests__",
     "test:api": "docker compose run --rm test-runner",
-    "docker:test": "docker compose --profile test up --build --abort-on-container-exit --exit-code-from test-runner",
+    "docker:test": "docker compose --profile test up --build --exit-code-from test-runner",
     "docker:start": "docker compose up --build",
     "docker:stop": "docker compose down",
     "docker:logs": "docker compose logs -f"

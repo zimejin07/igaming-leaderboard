@@ -166,3 +166,5 @@ docker-compose --profile test run --rm test-runner
 ## Future Enhancements
 
 - Optimize performance with query caching and pagination
+- Resolve currently failing integration tests:
+  - Some API tests (e.g. invalid input, update/delete player) fail due to validation or data not being seeded as expected

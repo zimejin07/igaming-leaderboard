@@ -53,13 +53,22 @@ services:
   test-runner:
     build:
       context: .
+    # command: >
+    #   sh -c "
+    #     npx prisma generate &&
+    #     npx prisma db push &&
+    #     npx prisma db seed &&
+    #     npm run test
+    #   "
     command: >
       sh -c "
         npx prisma generate &&
         npx prisma db push &&
         npx prisma db seed &&
-        npm run test
-      "
+        npm run build &&
+        npm run start & 
+        sleep 5 && 
+        npm run test"
     depends_on:
       - test-db
     environment:

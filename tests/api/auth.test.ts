@@ -1,5 +1,5 @@
 import request from "supertest";
-const baseUrl = "http://localhost:3000";
+const baseUrl = "http://web:3000";
 
 describe("Middleware Auth Redirect", () => {
   it("redirects unauthenticated user from /admin", async () => {

@@ -5,7 +5,6 @@ import { Player } from "@/lib/store";
 import { motion, Variants } from "framer-motion";
 import Confetti from "react-confetti";
 import { useWindowSize } from "react-use";
-import Image from "next/image";
 
 interface Props {
   players: Player[];

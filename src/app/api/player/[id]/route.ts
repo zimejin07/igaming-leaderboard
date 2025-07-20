@@ -1,6 +1,6 @@
 import { NextRequest } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { z } from "zod";
+import { z, ZodError } from "zod";
 import { handleApi } from "@/lib/apiWrapper";
 
 // Define a schema using Zod to validate that 'score' is an integer in the request body
@@ -23,18 +23,30 @@ export async function PUT(
   context: { params: Params }
 ): Promise<Response> {
   return handleApi(async () => {
-    const { id } = await context.params;
+    try {
+      const { id } = await context.params;
+      const body = await req.json();
 
-    const body = await req.json();
+      const player = await prisma.player.findUnique({ where: { id } });
+      if (!player) {
+        return Response.json({ error: "Player not found" }, { status: 404 });
+      }
 
-    const data = updateSchema.parse(body);
+      const data = updateSchema.parse(body);
 
-    const updated = await prisma.player.update({
-      where: { id },
-      data: { score: data.score },
-    });
+      const updated = await prisma.player.update({
+        where: { id },
+        data: { score: data.score },
+      });
 
-    return Response.json(updated);
+      return Response.json(updated);
+    } catch (err) {
+      if (err instanceof ZodError) {
+        return Response.json({ error: err.message }, { status: 400 });
+      }
+
+      return Response.json({ error: "Internal server error" }, { status: 500 });
+    }
   });
 }
 
